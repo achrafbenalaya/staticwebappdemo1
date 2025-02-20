@@ -1,4 +1,16 @@
 {
+  "routes": [
+     {
+     "route": "/index.html",
+     "rewrite": "/down.html",
+     "statusCode": 307
+    },
+    {
+     "route": "/test/",
+     "rewrite": "/down.html",
+    }
+    
+    ]
   "networking": {
     "allowedIpRanges": [
    "77.201.211.137"/32
