@@ -1,14 +1,4 @@
 {
-  "routes": [
-    {
-      "route": "/index.html",
-      "rewrite": "/down.html"
-    },
-    {
-      "route": "/test/",
-      "rewrite": "/down.html"
-    }
-  ],
   "networking": {
     "allowedIpRanges": [
       "77.201.211.137/32"
