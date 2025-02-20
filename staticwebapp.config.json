@@ -2,8 +2,7 @@
   "routes": [
     {
       "route": "/index.html",
-      "rewrite": "/down.html",
-      "statusCode": 307
+      "rewrite": "/down.html"
     },
     {
       "route": "/test/",
