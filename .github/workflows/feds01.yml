@@ -33,7 +33,7 @@ jobs:
 
       - name: Deploy Static Web App
         run: |
-          swa deploy ./ --app-name "staticwebappdemo1" \
+          swa deploy ./ --app-name "demofederation" \
             --resource-group "rg-demo-static-website-001" \
             --env "production" \
             --verbose
