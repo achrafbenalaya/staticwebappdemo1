@@ -33,8 +33,7 @@ jobs:
 
       - name: Deploy Static Web App
         run: |
-          az staticwebapp upload \
+          az staticwebapp deploy \
             --name "staticwebappdemo1" \
             --resource-group "rg-demo-static-website-001" \
-            --source "." \
-            --output-location "."
+            --source "."
