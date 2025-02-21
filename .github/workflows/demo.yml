@@ -28,7 +28,7 @@ jobs:
       - name: 'Install Node Dependencies'
         run: npm ci # If needed, otherwise remove this step
       - name: 'Upload Generated Static Content as Website Artifact'
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: website
           path: ${{ github.workspace }}/ # Specify the directory with your HTML files
