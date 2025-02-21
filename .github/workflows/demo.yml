@@ -1,0 +1,70 @@
+name: demo deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+# Environment variables used for consistency across the workflow.
+env:
+  SWA_NAME: 'cwc-static'
+  AZURE_CLI_VERSION: '2.33.0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+      - name: 'Install Node Dependencies'
+        run: npm ci # If needed, otherwise remove this step
+      - name: 'Upload Generated Static Content as Website Artifact'
+        uses: actions/upload-artifact@v1
+        with:
+          name: website
+          path: ${{ github.workspace }}/ # Specify the directory with your HTML files
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: 'Download Website Artifact'
+        uses: actions/download-artifact@v1
+        with:
+          name: website
+      - name: 'Az CLI Login via OIDC'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: "Add a mask to the SWA Token"
+        uses: azure/CLI@v1
+        with:
+          azcliversion: ${{ env.AZURE_CLI_VERSION }}
+          inlineScript: |
+            echo "::add-mask::$(az staticwebapp secrets list -n ${{ env.SWA_NAME }} | jq -r '.properties.apiKey')"            
+      - name: "Get SWA Token"
+        uses: azure/CLI@v1
+        with:
+          azcliversion: ${{ env.AZURE_CLI_VERSION }}
+          inlineScript: |
+            echo "SWA_TOKEN=$(az staticwebapp secrets list -n ${{ env.SWA_NAME }} | jq -r '.properties.apiKey')" >> $GITHUB_ENV            
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ env.SWA_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          app_location: 'website'
+          skip_app_build: true
