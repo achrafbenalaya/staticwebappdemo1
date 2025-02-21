@@ -31,6 +31,13 @@ jobs:
       - name: Install Azure Static Web Apps CLI
         run: npm install -g @azure/static-web-apps-cli
 
+      - name: Debug Azure Connection
+        run: az account show
+
+      - name: Unlink Static Web App (if needed)
+        continue-on-error: true
+        run: az staticwebapp disconnect --name "demofederation" --resource-group "rg-demo-static-website-001"
+
       - name: Deploy Static Web App
         run: |
           swa deploy ./ --app-name "demofederation" \
