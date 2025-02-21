@@ -28,12 +28,12 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Install Azure CLI Static Web App Extension
-        run: az extension add --name staticwebapp --yes
+      - name: Install Azure Static Web Apps CLI
+        run: npm install -g @azure/static-web-apps-cli
 
       - name: Deploy Static Web App
         run: |
-          az staticwebapp deploy \
-            --name "staticwebappdemo1" \
+          swa deploy ./ --app-name "staticwebappdemo1" \
             --resource-group "rg-demo-static-website-001" \
-            --source "."
+            --env "production" \
+            --verbose
